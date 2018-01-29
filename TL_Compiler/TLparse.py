@@ -85,16 +85,33 @@ def optimize():
 		link.append(')')
 		tup = tuple(link)
 		if(tup in m):
-			#m[tup].append(root)
 			# find left of right branch of pre node
 			if(root.pre.left==root):
 				root.pre.left = m[tup]
 			else:
 				root.pre.right = m[tup]
 		else:
-			#m[tup] = [root]
 			m[tup] = root
 		return link
+
+	# inorder traverse from the top node
+	top = cnt2observer[len(cnt2observer)-1]
+	inorder(top,{})
+
+###############################################################
+# Sort the processing node sequence, the sequence is stored in stack
+def sort_node():
+	top = cnt2observer[len(cnt2observer)-1]
+	# collect used node from the tree
+	def checkTree(root, graph):
+		if(root==None):
+			return
+		checkTree(root.left, graph);
+		graph.add(root)
+		checkTree(root.right, graph);
+
+	graph=set()
+	checkTree(top,graph)
 
 	def topologicalSortUtil(root, visited, stack):
 		if(root!=None and not visited[root]):
@@ -102,7 +119,6 @@ def optimize():
 			topologicalSortUtil(root.left,visited,stack)
 			topologicalSortUtil(root.right,visited,stack)
 			stack.insert(0,root)
-
 
 	def topologicalSort(root, graph):
 		visited = {}
@@ -112,20 +128,19 @@ def optimize():
 		for node in graph:
 			topologicalSortUtil(node,visited,stack)
 		stack.reverse()
-		print(stack)
+		return stack
 
-	# collect used node from the tree
-	def checkTree(root, graph):
-		if(root==None):
-			return
-		checkTree(root.left, graph);
-		graph.add(root)
-		checkTree(root.right, graph);
+	stack = topologicalSort(top,graph)
+	return stack
 
-	# inorder traverse from the top node
-	top = cnt2observer[len(cnt2observer)-1]
-	inorder(top,{})
-	graph=set()
-	checkTree(top,graph)
-	topologicalSort(top,graph)
+# Generate assembly code
+def gen_assembly():	
+	stack = sort_node()
+	s=""
+	for node in stack:
+		s = node.gen_assembly(s)
+	print(s)
+
+
+
 
