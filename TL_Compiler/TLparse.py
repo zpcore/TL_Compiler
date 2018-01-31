@@ -116,8 +116,7 @@ def sort_node():
 	def topologicalSortUtil(root, visited, stack):
 		if(root!=None and not visited[root]):
 			visited[root] = True
-			topologicalSortUtil(root.left,visited,stack)
-			topologicalSortUtil(root.right,visited,stack)
+			[topologicalSortUtil(i,visited,stack) for i in(root.left, root.right)]
 			stack.insert(0,root)
 
 	def topologicalSort(root, graph):
@@ -125,8 +124,7 @@ def sort_node():
 		for node in graph:
 			visited[node]=False 
 		stack = []
-		for node in graph:
-			topologicalSortUtil(node,visited,stack)
+		[topologicalSortUtil(node,visited,stack) for node in graph]
 		stack.reverse()
 		return stack
 
